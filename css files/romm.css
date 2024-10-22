@@ -1,0 +1,125 @@
+/* Full-page styling with a background image */
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('static/college.jpg'); /* Path to your background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container for the service request form */
+.service-request-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 340px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-request-container:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Add deeper shadow on hover */
+}
+
+/* Form heading */
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #bf0c45;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Labels for the form fields */
+label {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Input field styling */
+input[type="date"] {
+    padding: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    border: 2px solid #bf0c45;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+}
+
+/* Style for the calendar input field */
+input[type="date"]:focus {
+    border-color: #e61b5a;
+    background-color: #fdf2f2;
+    outline: none;
+}
+
+/* Button styling */
+button {
+    padding: 12px;
+    background-color: #bf0c45;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    background-color: #e61b5a; /* Slightly lighter shade on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+}
+
+/* Disabled button styling */
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Vacancy information section */
+#vacancyInfo {
+    margin-top: 20px;
+}
+
+#vacancyMessage {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Smooth fade-in for elements when displayed */
+#vacancyInfo,
+#confirmButton {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#vacancyInfo.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Make buttons slightly pop out */
+#confirmButton {
+    transition: transform 0.2s ease;
+}
+
+#confirmButton:hover {
+    transform: scale(1.03); /* Slight zoom on hover */
+}

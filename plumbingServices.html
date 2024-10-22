@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plumbing Services Request</title>
+    <link rel="stylesheet" href="dashstyle.css"> <!-- Add your CSS file here -->
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Plumbing Services Request</h1>
+    </header>
+
+    <!-- Plumbing Services Form -->
+    <div class="form-container">
+        <form id="plumbingServicesForm">
+            
+            <label for="serviceDate">Select Date for Service:</label>
+            <input type="date" id="serviceDate" name="serviceDate" required>
+
+            <label for="plumbingType">Type of Service:</label>
+            <select id="plumbingType" name="plumbingType" required>
+                <option value="Taps">Taps Repair</option>
+                <option value="Shower">Shower Repair</option>
+                <option value="Commode Repair">Commode Repair</option>
+                <option value="Bathroom Doors">Bathroom Doors Repair</option>
+                <option value="Hangers Replace">Hangers Replace</option>
+                <option value="Hangers Missing">Hangers Missing</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <!-- Hidden Comments Box for "Other" -->
+            <div id="commentsContainer" style="display: none;">
+                <label for="comments">Comments:</label>
+                <textarea id="comments" name="comments" placeholder="Please specify the issue..." required></textarea>
+            </div>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle "Other" selection to show/hide comments box
+        const plumbingTypeSelect = document.getElementById('plumbingType');
+        const commentsContainer = document.getElementById('commentsContainer');
+        const commentsField = document.getElementById('comments');
+
+        plumbingTypeSelect.addEventListener('change', function() {
+            if (plumbingTypeSelect.value === 'Other') {
+                commentsContainer.style.display = 'block'; // Show comments box
+                commentsField.setAttribute('required', 'required'); // Make comments mandatory
+            } else {
+                commentsContainer.style.display = 'none'; // Hide comments box
+                commentsField.removeAttribute('required'); // Make comments optional
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('plumbingServicesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const serviceDate = document.getElementById('serviceDate').value;
+            const plumbingType = document.getElementById('plumbingType').value;
+            const comments = plumbingType === 'Other' ? document.getElementById('comments').value : '';
+
+            // Alert with details for now (replace with API call later)
+            let message = `Plumbing Service Requested on ${serviceDate}\nService Type: ${plumbingType}`;
+            if (comments) {
+                message += `\nComments: ${comments}`;
+            }
+            alert(message);
+
+            // You can add your backend API call here to submit the form data.
+        });
+    </script>
+    
+</body>
+</html>

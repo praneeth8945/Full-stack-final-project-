@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css files/AdminDash.css">
+    <script>
+        var isPending=true;
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="admin-header">
+            <h1>Welcome, Admin</h1>
+        </header>
+
+        <section class="service-selection">
+            <label for="services" class="service-label">Select Service:</label>
+            <select id="services" class="service-dropdown">
+                <option value="Room Cleaning">Room Cleaning</option>
+                <option value="Bathroom Cleaning">Bathroom Cleaning</option>
+                <option value="Plumbing">Plumbing Services</option>
+                <option value="Eectrical">Electrical Repairs</option>
+                <option value="Laundry">Laundry Services</option>
+                <option value="Technical">Technical Services (Wi-Fi/Internet)</option>
+            </select>
+        </section>
+
+        <section class="request-buttons">
+            <button id="pending-requests-btn">Pending Requests</button>
+            <button id="completed-requests-btn">Completed Requests</button>
+        </section>
+    </div>
+
+    <!-- Modal for displaying requests -->
+    <div id="request-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Requests</h2>
+            <table id="request-table">
+                <thead>
+                    <tr>
+                        <th id="select">Select</th>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Room Number</th>
+                        <th>Date of Request</th>
+                        <th>Phone Number</th>
+                    </tr>
+                </thead>
+                <tbody id="request-body">
+                    <!-- Requests will be dynamically inserted here -->
+                </tbody>
+            </table>
+            <button id="mark-completed-btn" style="display:none;">Mark as Completed</button>
+        </div>
+    </div>
+
+    <script>
+        let pendingRequests = [];
+        let completedRequests = [];
+
+        const modal = document.getElementById("request-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const requestBody = document.getElementById("request-body");
+        const closeBtn = document.getElementsByClassName("close")[0];
+        const markCompletedBtn = document.getElementById("mark-completed-btn");
+
+        // Close modal when 'X' is clicked
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+            markCompletedBtn.style.display = "none";
+        }
+
+        // Close modal when clicking outside of the modal content
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                markCompletedBtn.style.display = "none";
+            }
+        }
+
+        // Function to fetch pending requests from the backend
+        async function fetchPendingRequests(serviceName) {
+            try {
+                const response = await fetch('http://localhost:5000/api/tasks/pendingTasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ serviceName })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.tasks && data.tasks.length > 0) {
+                    pendingRequests = data.tasks;
+                    displayRequests(pendingRequests, `Pending ${serviceName} Requests`, true);
+                } else {
+                    document.getElementById('request-body').innerHTML = `<tr><td colspan="6">No pending tasks found for ${serviceName}</td></tr>`;
+                }
+            } catch (error) {
+                console.error('Error fetching pending requests:', error);
+            }
+        }
+
+        function displayRequests(requests, title) {
+            modalTitle.innerText = title;
+            requestBody.innerHTML = ""; // Clear previous content
+            let selectedRequestIds = [];
+            requests.forEach((request, index) => {
+            const row = `<tr>
+                ${isPending ? `<td><input type="checkbox" class="mark-completed-checkbox" data-id="${request._id}"></td>` : ``}
+                <td>${request.rollNumber}</td>
+                <td>${request.name}</td>
+                <td>${request.roomNumber}</td>
+                <td>${request.dateOfCreation}</td>
+                <td>${request.phoneNumber}</td>
+            </tr>`;
+            requestBody.innerHTML += row;
+        });
+
+        modal.style.display = "block";
+        if (isPending) {
+            markCompletedBtn.style.display = "inline-block";
+        }
+
+    // Add event listeners to checkboxes after rendering
+    document.querySelectorAll(".mark-completed-checkbox").forEach(checkbox => {
+        checkbox.addEventListener("change", function() {
+            const requestId = this.getAttribute('data-id');
+            if (this.checked) {
+                selectedRequestIds.push(requestId);  // Add the ID to the array if checked
+            } else {
+                selectedRequestIds = selectedRequestIds.filter(id => id !== requestId);  // Remove the ID if unchecked
+            }
+        });
+    });
+    
+    markCompletedBtn.addEventListener("click", function() {
+        // You now have the IDs in the selectedRequestIds array
+        async function markRequests(selectedRequestIds) {
+            try {
+                console.log(selectedRequestIds);
+                const response = await fetch('http://localhost:5000/api/tasks/completeTasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ selectedRequestIds })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error marking requests:', error);
+            }
+            modal.style.display="none"
+        }
+        markRequests(selectedRequestIds);
+        selectedRequestIds = [];
+        // Here you can proceed to update the status of the requests, and clear the array after processing.
+        // Example: Clear selectedRequestIds after marking them as completed.
+    });
+}
+
+        // Fetch and display pending requests
+        document.getElementById("pending-requests-btn").addEventListener("click", function() {
+            isPending=true;
+            document.getElementById('select').style.display="table-cell";
+            const selectedService = document.getElementById('services').value;
+            fetchPendingRequests(selectedService);  // Fetch based on selected service
+        });
+        
+        // Display completed requests
+        document.getElementById("completed-requests-btn").addEventListener("click", function() {
+            completedRequests=[]
+            async function fetchCompleted(serviceName) {
+                try {
+                    document.getElementById('select').style.display="none";
+                    isPending=false;   
+                    const response = await fetch('http://localhost:5000/api/tasks/completedTasks', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ serviceName })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    
+                    if (data.tasks && data.tasks.length > 0) {
+                        completedRequests = data.tasks;
+                        displayRequests(completedRequests, `Completed ${serviceName} Requests`, false);
+                    } else {
+                        document.getElementById('request-body').innerHTML = `<tr><td colspan="6">No Completed tasks found for ${serviceName}</td></tr>`;
+                    }
+                    completedRequests = response.json().tasks;
+                } catch (error) {
+                    console.error('Error marking requests:', error);
+                }
+            }
+            const selectedService = document.getElementById('services').value;
+            fetchCompleted(selectedService);
+        });
+        </script>
+</body>
+</html>

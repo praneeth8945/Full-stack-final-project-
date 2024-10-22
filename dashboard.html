@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Service Dashboard</title>
+    <link rel="stylesheet" href="css files\dashstyle.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Hostel Service Dashboard</h1>
+        <div class="user-menu">
+            <button id="userButton">John Doe</button>
+            <div id="dropdown">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cards Container -->
+    <div class="container">
+        <div class="card">
+            <h3>Room Cleaning</h3>
+            <p>Request room cleaning service.</p>
+            <a href="roomCleaning.html">Request Service</a>
+        </div>
+
+        <div class="card">
+            <h3>Bathroom Cleaning</h3>
+            <p>Request bathroom cleaning service.</p>
+            <!-- Changed this to a link that navigates to bathroomCleaning.html -->
+            <a href="bathroomCleaning.html">Request Service</a>
+        </div>
+
+        <div class="card">
+            <h3>Electronic Repairs</h3>
+            <p>Request repairs for fans, lights, etc.</p>
+            <a href="electronicRepairs.html">Request Service</a>
+        </div>        
+
+        <div class="card">
+            <h3>Plumbing Services</h3>
+            <p>Request plumbing repairs or services.</p>
+            <a href="plumbingServices.html">Request Service</a>
+        </div>
+            
+
+        <div class="card">
+            <h3>Laundry Request</h3>
+            <p>Request laundry services.</p>
+            <a href="laundryService.html">Request Service</a>
+        </div>
+        
+        <div class="card">
+            <h3>Technical Services (Wi-Fi)</h3>
+            <p>Request technical support for internet issues.</p>
+            <a href="technicalServices.html">Request Service</a>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve the roll number from localStorage and display it as the username
+        const rollNumber = localStorage.getItem('rollNumber');
+        if (rollNumber) {
+            document.getElementById('userButton').textContent = rollNumber;
+        } else {
+            // If roll number is not found (user is not logged in), redirect to login page
+            window.location.href = 'index.html';
+        }
+
+        // Toggle dropdown visibility
+        document.getElementById('userButton').addEventListener('click', function() {
+            const dropdown = document.getElementById('dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Logout function
+        function logout() {
+            // Clear the localStorage and redirect to login page
+            localStorage.removeItem('rollNumber');
+            window.location.href = 'index.html';
+        }
+
+        // Hide dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.matches('#userButton')) {
+                const dropdown = document.getElementById('dropdown');
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+            }
+        }
+    </script>
+    
+</body>
+</html>

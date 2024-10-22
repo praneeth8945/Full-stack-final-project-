@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Login</title>
+    <link rel="stylesheet" href="css files\styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Hostel Service Login</h1>
+        <form id="loginForm">
+            <label for="rollNumber">Roll Number:</label>
+            <input type="text" id="rollNumber" name="rollNumber" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+        <div id="errorMessage" class="alert" style="display: none;">Invalid credentials</div>
+
+        <!-- Link to create an account -->
+        <p>Don't have an account? <a href="register.html">Create an account</a></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+    
+            // Get input values from the form
+            const rollNumber = document.getElementById('rollNumber').value;
+            const password = document.getElementById('password').value;
+    
+            // Prepare the data for the API request
+            const loginData = {
+                RollNumber: rollNumber,
+                Password: password
+            };
+    
+            // Send a POST request to the backend login API
+            fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Invalid credentials');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful login (assuming the backend returns user data)
+                localStorage.setItem('rollNumber', data.user.RollNumber);
+                localStorage.setItem('phoneNumber', data.user.PhoneNumber);
+                localStorage.setItem('roomNumber', data.user.RoomNumber);
+                localStorage.setItem('name',data.user.UserName)
+                // Redirect to the dashboard page
+                window.location.href = 'dashboard.html';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Show the error message if login fails
+                document.getElementById('errorMessage').style.display = 'block';
+            });
+        });
+    </script>
+    
+</body>
+</html>

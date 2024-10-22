@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Cleaning Service Request</title>
+    <link rel="stylesheet" href="romm.css"> 
+    <style>
+        /* Center the form and its elements */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        .service-request-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #vacancyInfo {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="service-request-container">
+        <h1>Room Cleaning Service Request</h1>
+        <form id="roomCleaningForm">
+            <label for="lastTimeCleaned">Select a Date for Cleaning:</label>
+            <input type="date" id="lastTimeCleaned" required>
+
+            <div id="vacancyInfo" style="display: none;">
+                <p id="vacancyMessage"></p>
+                <button id="confirmButton" style="display: none;">Confirm Request</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('lastTimeCleaned').addEventListener('change', function() {
+            const selectedDate = document.getElementById('lastTimeCleaned').value;
+
+            // Fetch the vacancies for the selected date
+            fetch(`http://localhost:5000/api/availability/services`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "date": selectedDate,
+                    "serviceType": "Room Cleaning"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const vacancyInfo = document.getElementById('vacancyInfo');
+                const vacancyMessage = document.getElementById('vacancyMessage');
+                const confirmButton = document.getElementById('confirmButton');
+
+                if (data.count < 10) { // Assuming a max of 10 requests per day
+                    vacancyMessage.textContent = `Vacancies available: ${10 - data.count}`;
+                    vacancyInfo.style.display = 'block';
+                    confirmButton.style.display = 'inline-block'; // Show the confirm button
+                    confirmButton.disabled = false; // Enable the button
+                } else {
+                    vacancyMessage.textContent = "No vacancies available for this date.";
+                    vacancyInfo.style.display = 'block';
+                    confirmButton.style.display = 'none'; // Hide the confirm button
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('confirmButton').addEventListener('click', function(e) {
+            const selectedDate = document.getElementById('lastTimeCleaned').value;
+            
+            fetch('http://localhost:5000/api/availability/AddService', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    "date": selectedDate,
+                    "serviceType": "Room Cleaning",
+                    "rollNumber": localStorage.getItem('rollNumber'),
+                    "roomNumber": localStorage.getItem('roomNumber'),
+                    "phoneNumber": localStorage.getItem('phoneNumber'),
+                    "name":localStorage.getItem('name')
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // You can handle the response data here if needed
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

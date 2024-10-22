@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Services Request</title>
+    <link rel="stylesheet" href="dashstyle.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Technical Services Request</h1>
+    </header>
+
+    <!-- Technical Services Form -->
+    <div class="form-container">
+        <form id="technicalServiceForm">
+
+            <label for="serviceType">Select Service Type:</label>
+            <select id="serviceType" name="serviceType" required>
+                <option value="">--Select Service--</option>
+                <option value="wifi">Wi-Fi Issue</option>
+                <option value="power">Power Issue</option>
+            </select>
+
+            <!-- Wi-Fi Service Fields -->
+            <div id="wifiFields" style="display: none;">
+                <label for="floorNumber">Floor Number:</label>
+                <input type="number" id="floorNumber" name="floorNumber" min="1">
+
+                <label>Wi-Fi Issue:</label>
+                <input type="checkbox" id="wifiNotWorking" name="wifiIssue" value="Not Working">
+                <label for="wifiNotWorking">Wi-Fi Not Working</label>
+
+                <input type="checkbox" id="slowNetwork" name="wifiIssue" value="Slow Network">
+                <label for="slowNetwork">Slow Network</label>
+            </div>
+
+            <!-- Power Issue Fields -->
+            <div id="powerFields" style="display: none;">
+                <label for="roomNumber">Room Number:</label>
+                <input type="text" id="roomNumber" name="roomNumber">
+
+                <label for="voltageIssue">Voltage Issue:</label>
+                <select id="voltageIssue" name="voltageIssue" required>
+                    <option value="high">High Voltage</option>
+                    <option value="low">Low Voltage</option>
+                </select>
+            </div>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle dynamic form fields display based on selected service type
+        const serviceTypeSelect = document.getElementById('serviceType');
+        const wifiFields = document.getElementById('wifiFields');
+        const powerFields = document.getElementById('powerFields');
+
+        serviceTypeSelect.addEventListener('change', function() {
+            const selectedService = serviceTypeSelect.value;
+            
+            // Reset visibility
+            wifiFields.style.display = 'none';
+            powerFields.style.display = 'none';
+
+            // Show relevant fields based on the selected service
+            if (selectedService === 'wifi') {
+                wifiFields.style.display = 'block';
+            } else if (selectedService === 'power') {
+                powerFields.style.display = 'block';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('technicalServiceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get the selected service type
+            const serviceType = document.getElementById('serviceType').value;
+
+            let additionalInfo = '';
+
+            // Wi-Fi Service Data
+            if (serviceType === 'wifi') {
+                const floorNumber = document.getElementById('floorNumber').value;
+                const wifiNotWorking = document.getElementById('wifiNotWorking').checked ? 'Wi-Fi Not Working' : '';
+                const slowNetwork = document.getElementById('slowNetwork').checked ? 'Slow Network' : '';
+                additionalInfo = `Floor Number: ${floorNumber}\nIssue: ${wifiNotWorking} ${slowNetwork}`;
+            }
+
+            // Power Issue Data
+            if (serviceType === 'power') {
+                const roomNumber = document.getElementById('roomNumber').value;
+                const voltageIssue = document.getElementById('voltageIssue').value;
+                additionalInfo = `Room Number: ${roomNumber}\nVoltage Issue: ${voltageIssue}`;
+            }
+
+            // For now, we're just showing an alert as a placeholder for form submission
+            alert(`Technical Service Requested\nService Type: ${serviceType}\n${additionalInfo}`);
+
+            // You can add your backend API call here to submit the form data.
+        });
+    </script>
+    
+</body>
+</html>

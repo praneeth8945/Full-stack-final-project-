@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronic Repairs Request</title>
+    <link rel="stylesheet" href="dashstyle.css"> <!-- Add your CSS file here -->
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Electronic Repairs Request</h1>
+    </header>
+
+    <!-- Electronic Repairs Form -->
+    <div class="form-container">
+        <form id="electronicRepairsForm">
+            <label for="repairType">Type of Repair:</label>
+            <select id="repairType" name="repairType" required>
+                <option value="Fan Repair">Fan Repair</option>
+                <option value="Exhaust Fan Repair">Exhaust Fan Repair</option>
+                <option value="Power Socket Repair">Power Socket Repair</option>
+                <option value="Tube Light Repair">Tube Light Repair</option>
+                <option value="Low/High Voltage Problem">Low/High Voltage Problem</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <!-- Comment Box for "Other" option -->
+            <div id="otherRepairDescription" style="display: none;">
+                <label for="otherDescription">Please describe the problem:</label>
+                <textarea id="otherDescription" name="otherDescription" rows="4" required></textarea>
+            </div>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Show the comment box when "Other" is selected
+        document.getElementById('repairType').addEventListener('change', function() {
+            const otherRepairDescription = document.getElementById('otherRepairDescription');
+            if (this.value === 'Other') {
+                otherRepairDescription.style.display = 'block';
+            } else {
+                otherRepairDescription.style.display = 'none';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('electronicRepairsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const repairType = document.getElementById('repairType').value;
+            let repairDescription = repairType;
+
+            // If "Other" is selected, get the description from the comment box
+            if (repairType === 'Other') {
+                repairDescription = document.getElementById('otherDescription').value;
+            }
+
+            // For now, we're just showing an alert as a placeholder for form submission
+            alert(`Electronic Repair Requested\nRepair Type: ${repairDescription}`);
+
+            // You can add your backend API call here to submit the form data.
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bathroom Cleaning Request</title>
+    <link rel="stylesheet" href="dashstyle.css"> <!-- Add your CSS file here -->
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Bathroom Cleaning Request</h1>
+    </header>
+
+    <!-- Bathroom Cleaning Form -->
+    <div class="form-container">
+        <form id="bathroomCleaningForm">
+            <label for="lastService">Last Bathroom Cleaning Date:</label>
+            <input type="date" id="lastService" name="lastService" required>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('bathroomCleaningForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get the last service date
+            const lastService = document.getElementById('lastService').value;
+
+            // For now, we're just showing an alert as a placeholder for form submission
+            alert(`Bathroom Cleaning Requested\nLast Cleaning: ${lastService}`);
+
+            // You can add your backend API call here to submit the form data.
+        });
+    </script>
+    
+</body>
+</html>
